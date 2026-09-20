@@ -27,6 +27,11 @@ def test_does_not_fire_below_duration():
     assert feed(sustained(), [(0, 86), (4 + 59 / 60, 86)]) == []
 
 
+def test_exactly_at_limit_counts_as_over():
+    fired = feed(sustained(), [(0, 85.0), (1, 85.0), (2, 85.0), (3, 85.0), (4, 85.0), (5, 85.0)])
+    assert fired == [5]
+
+
 def test_below_limit_resets_streak():
     assert feed(sustained(), [(0, 86), (2, 84.9), (3, 86), (7, 86)]) == []
     assert feed(sustained(), [(0, 86), (2, 84.9), (3, 86), (8, 86)]) == [8]
