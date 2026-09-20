@@ -11,6 +11,7 @@ pytest -q
 uvicorn equip_monitor.app:app --reload                   # http://127.0.0.1:8000/docs
 python simulator/run.py --replay data/samples/overheat.log
 python simulator/run.py --scenario overheat --interval 1
+python scripts/check_rules.py data/samples/overheat.log   # 룰 검증 (알람 표 출력)
 ```
 
 ## 구조
@@ -28,7 +29,7 @@ data/samples 정상 · 과열 · 음수 로그
 로그 라인: `2026-09-21T09:00:00Z DEV-01 state=RUN temp=82.5 pressure=1.20`
 
 ## 실습 이슈
-`python scripts/seed.py` 로 생성. 본문은 `docs/issues/`.
+`python scripts/seed.py` 로 생성 (한 번만 실행 — 재실행 시 이슈가 중복 생성됨). 본문은 `docs/issues/`.
 
 ## 체크포인트
 뒤처지면 `git checkout m3-start` … `m6-start` 로 합류.

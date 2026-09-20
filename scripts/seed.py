@@ -38,4 +38,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="GitHub 라벨·실습 이슈 생성 (gh CLI 필요, 한 번만 실행)")
     parser.add_argument("--with-injection", action="store_true", help="이슈 #4(프롬프트 인젝션 데모)도 생성")
     args = parser.parse_args()
-    sys.exit(main(args.with_injection))
+    try:
+        sys.exit(main(args.with_injection))
+    except subprocess.CalledProcessError as exc:
+        print(f"gh 명령 실패: {exc.stderr.strip()}", file=sys.stderr)
+        sys.exit(1)

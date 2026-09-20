@@ -14,7 +14,7 @@ def check(name: str, ok: bool, hint: str = "") -> bool:
 
 def main() -> int:
     results = [check(f"Python {sys.version.split()[0]} >= 3.11", sys.version_info >= (3, 11), "Python 3.11 이상 설치")]
-    for mod in ("fastapi", "httpx", "pytest", "mcp", "equip_monitor"):
+    for mod in ("fastapi", "uvicorn", "httpx", "pytest", "mcp", "equip_monitor"):
         try:
             importlib.import_module(mod)
             results.append(check(f"import {mod}", True))
