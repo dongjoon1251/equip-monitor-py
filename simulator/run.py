@@ -10,6 +10,7 @@ import random
 import sys
 import time
 from datetime import datetime, timezone
+from pathlib import Path
 
 import httpx
 
@@ -41,17 +42,32 @@ def main() -> int:
     p.add_argument("--replay", metavar="LOG", help="로그 파일을 /ingest 로 한 번에 전송")
     args = p.parse_args()
 
-    with httpx.Client(base_url=args.base, timeout=5) as client:
-        if args.replay:
-            with open(args.replay, encoding="utf-8") as f:
-                r = client.post("/ingest", content=f.read(), headers={"content-type": "text/plain"})
-            print(r.status_code, r.json())
-            return 0 if r.is_success else 1
-        for tick in range(args.count):
-            r = client.post("/telemetry", json=[sample(d, tick, args.scenario) for d in DEVICES])
-            body = r.json()
-            print(f"tick {tick:3d}: accepted={body['accepted']} alarms={[a['rule'] for a in body['alarms']]}")
-            time.sleep(args.interval)
+    if args.replay and not Path(args.replay).exists():
+        print(f"파일을 찾을 수 없습니다: {args.replay}", file=sys.stderr)
+        return 2
+
+    try:
+        with httpx.Client(base_url=args.base, timeout=5) as client:
+            if args.replay:
+                with open(args.replay, encoding="utf-8") as f:
+                    r = client.post("/ingest", content=f.read(), headers={"content-type": "text/plain"})
+                print(r.status_code, r.json())
+                return 0 if r.is_success else 1
+            for tick in range(args.count):
+                r = client.post("/telemetry", json=[sample(d, tick, args.scenario) for d in DEVICES])
+                if not r.is_success:
+                    print(f"tick {tick:3d}: HTTP {r.status_code} {r.text}", file=sys.stderr)
+                    time.sleep(args.interval)
+                    continue
+                body = r.json()
+                print(f"tick {tick:3d}: accepted={body['accepted']} alarms={[a['rule'] for a in body['alarms']]}")
+                time.sleep(args.interval)
+    except httpx.HTTPError:
+        print(
+            f"서버에 연결할 수 없습니다 ({args.base}). 먼저 uvicorn을 실행하세요: uvicorn equip_monitor.app:app --port 8000",
+            file=sys.stderr,
+        )
+        return 1
     return 0
 
 

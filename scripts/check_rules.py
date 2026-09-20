@@ -23,4 +23,11 @@ def main(path: str) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1]))
+    if len(sys.argv) != 2:
+        print("사용법: python scripts/check_rules.py <log 파일>", file=sys.stderr)
+        sys.exit(2)
+    log_path = sys.argv[1]
+    if not Path(log_path).exists():
+        print(f"파일을 찾을 수 없습니다: {log_path}", file=sys.stderr)
+        sys.exit(2)
+    sys.exit(main(log_path))
