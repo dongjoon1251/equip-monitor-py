@@ -41,5 +41,5 @@ def test_alarm_is_persisted_in_store():
 
 
 def test_default_rules_are_threshold_rules():
-    assert [r.name for r in DEFAULT_RULES] == ["temp-critical", "pressure-high"]
+    assert [r.name for r in DEFAULT_RULES] == ["temp-critical", "pressure-high", "temp-sustained"]
     assert isinstance(Finding(Severity.INFO, "x"), Finding)
