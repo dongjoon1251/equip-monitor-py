@@ -39,3 +39,21 @@ def test_devices_crud():
     assert client.post("/devices", json={"id": "DEV-01", "name": "챔버 1", "location": "A동"}).status_code == 201
     assert [d["id"] for d in client.get("/devices").json()] == ["DEV-01"]
     assert client.get("/devices/NOPE").status_code == 404
+
+
+def test_uptime_report_per_device():
+    lines = (
+        "2026-09-21T09:00:00Z DEV-01 state=RUN temp=60\n"
+        "2026-09-21T15:00:00Z DEV-01 state=DOWN temp=40\n"
+        "2026-09-21T09:00:00Z DEV-02 state=IDLE temp=30\n"
+    )
+    client.post("/ingest", content=lines, headers={"content-type": "text/plain"})
+    r = client.get("/report/uptime", params={"from": "2026-09-21", "to": "2026-09-21", "device_id": "DEV-01"})
+    assert r.status_code == 200
+    row = r.json()[0]
+    assert row["device_id"] == "DEV-01"
+    assert set(row["durations_s"]) == {"RUN", "IDLE", "DOWN", "MAINT"}
+    assert row["durations_s"]["RUN"] == 6 * 3600
+    assert 0 < row["uptime_ratio"] < 1
+    assert len(client.get("/report/uptime", params={"from": "2026-09-21", "to": "2026-09-21"}).json()) == 2
+    assert client.get("/report/uptime", params={"from": "2026-09-21", "to": "2026-09-21", "device_id": "X"}).status_code == 404

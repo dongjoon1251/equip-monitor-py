@@ -37,3 +37,6 @@ data/samples 정상 · 과열 · 음수 로그
 
 뒤처지면 `git checkout m3-start` … `m6-start` 로 합류.
 브랜치를 바꾼 뒤에는 `pip install -r requirements.txt` 를 다시 실행하세요 (m6-start 부터 의존성이 달라집니다).
+
+## 내부 MCP 서버 (M5)
+`mcp_server/equip_mcp.py` — 실행 중인 API 를 읽기 전용 도구 4개로 노출. `.vscode/mcp.json` 의 `equip` 항목으로 Copilot 에 연결된다. Windows 에서는 `command` 를 `${workspaceFolder}\\.venv\\Scripts\\python.exe` 로 바꾼다.
