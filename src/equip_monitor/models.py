@@ -28,18 +28,19 @@ class Device(BaseModel):
     state: DeviceState = DeviceState.IDLE
 
 
+def _must_be_aware(v: datetime) -> datetime:
+    if v.tzinfo is None:
+        raise ValueError("ts must be timezone-aware (UTC)")
+    return v
+
+
 class Telemetry(BaseModel):
     device_id: str
     ts: datetime
     metrics: dict[str, float] = Field(default_factory=dict)
     state: DeviceState = DeviceState.IDLE
 
-    @field_validator("ts")
-    @classmethod
-    def _must_be_aware(cls, v: datetime) -> datetime:
-        if v.tzinfo is None:
-            raise ValueError("ts must be timezone-aware (UTC)")
-        return v
+    _validate_ts = field_validator("ts")(_must_be_aware)
 
 
 class Alarm(BaseModel):
@@ -50,6 +51,8 @@ class Alarm(BaseModel):
     message: str
     ts: datetime
     acked: bool = False
+
+    _validate_ts = field_validator("ts")(_must_be_aware)
 
 
 def ensure_utc(dt: datetime | None) -> datetime | None:

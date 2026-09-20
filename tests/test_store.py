@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from equip_monitor.models import DeviceState, Severity, Telemetry
+from equip_monitor.models import Alarm, DeviceState, Severity, Telemetry
 from equip_monitor.store import Store
 from helpers import T0, at, tele
 
@@ -9,6 +9,11 @@ from helpers import T0, at, tele
 def test_telemetry_requires_aware_timestamp():
     with pytest.raises(ValidationError):
         Telemetry(device_id="DEV-01", ts=T0.replace(tzinfo=None), metrics={}, state=DeviceState.RUN)
+
+
+def test_alarm_requires_aware_timestamp():
+    with pytest.raises(ValidationError):
+        Alarm(id=1, device_id="DEV-01", rule="r", severity=Severity.WARNING, message="m", ts=T0.replace(tzinfo=None))
 
 
 def test_add_telemetry_autoregisters_device_and_updates_state():
