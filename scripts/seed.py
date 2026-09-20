@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import argparse
 import subprocess
 import sys
 from pathlib import Path
@@ -34,4 +35,7 @@ def main(with_injection: bool) -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main("--with-injection" in sys.argv[1:]))
+    parser = argparse.ArgumentParser(description="GitHub 라벨·실습 이슈 생성 (gh CLI 필요, 한 번만 실행)")
+    parser.add_argument("--with-injection", action="store_true", help="이슈 #4(프롬프트 인젝션 데모)도 생성")
+    args = parser.parse_args()
+    sys.exit(main(args.with_injection))
