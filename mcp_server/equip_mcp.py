@@ -8,7 +8,7 @@ from __future__ import annotations
 import os
 
 import httpx
-from mcp.server.mcpserver import MCPServer  # ponytail: installed mcp==2.2.0 renamed FastMCP -> MCPServer; API (tool()/list_tools()/run()) is unchanged
+from mcp.server.mcpserver import MCPServer  # ponytail: mcp>=2.0 API — MCPServer's tool()/list_tools()/run() surface is what this module targets
 
 BASE = os.environ.get("EQUIP_API", "http://127.0.0.1:8000")
 mcp = MCPServer("equip-monitor")
