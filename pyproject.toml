@@ -1,0 +1,15 @@
+[project]
+name = "equip-monitor"
+version = "0.1.0"
+description = "장비 텔레메트리 수집·알람·가동률 리포트 — GitHub Copilot 실습용 모니터링 백엔드"
+requires-python = ">=3.11"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
