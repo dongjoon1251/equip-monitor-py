@@ -25,7 +25,7 @@ description: equip-monitor 에 알람 룰을 추가하거나 수정할 때 사�
 
 ## 4. 검증 (반드시 실행하고 출력을 응답에 붙인다)
 ```
-pytest tests/test_rules.py -q
+pytest -q   # (전체 스위트 — 새 룰을 DEFAULT_RULES 에 넣으면 tests/test_engine.py 의 룰 이름 목록 테스트도 갱신해야 한다)
 python scripts/check_rules.py data/samples/overheat.log
 ```
 `overheat.log` 기대 결과: `temp-sustained` 09:07 · 09:15, `temp-critical` 09:16. 기대와 다르면 룰을 고치고 다시 실행한다. 3회 실패하면 멈추고 사용자에게 보고한다.
