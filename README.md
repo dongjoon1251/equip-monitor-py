@@ -30,6 +30,7 @@ data/samples 정상 · 과열 · 음수 로그
 
 ## 실습 이슈
 `python scripts/seed.py` 로 생성 (한 번만 실행 — 재실행 시 이슈가 중복 생성됨). 본문은 `docs/issues/`.
+강사용: `python scripts/seed.py --with-injection` (이슈 #4 본문은 강사용 solution repo 에만 있음 → --injection-file 로 경로 지정)
 
 ## 체크포인트
 뒤처지면 `git checkout m3-start` … `m6-start` 로 합류.
