@@ -8,7 +8,7 @@ python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\
 pip install -r requirements.txt
 python scripts/check_env.py                              # 사전 과제: 모두 OK 캡처
 pytest -q
-uvicorn equip_monitor.app:app --reload                   # http://127.0.0.1:8000/docs
+uvicorn equip_monitor.app:app --reload                   # http://127.0.0.1:8000/docs  # 터미널을 점유함 — 이후 명령은 새 터미널에서
 python simulator/run.py --replay data/samples/overheat.log
 python simulator/run.py --scenario overheat --interval 1
 python scripts/check_rules.py data/samples/overheat.log   # 룰 검증 (알람 표 출력)
@@ -33,4 +33,7 @@ data/samples 정상 · 과열 · 음수 로그
 강사용: `python scripts/seed.py --with-injection` (이슈 #4 본문은 강사용 solution repo 에만 있음 → --injection-file 로 경로 지정)
 
 ## 체크포인트
+> **Use this template** 로 자기 repo 를 만들 때 **Include all branches** 를 반드시 체크하세요. 체크하지 않으면 아래 체크포인트 브랜치가 생기지 않습니다.
+
 뒤처지면 `git checkout m3-start` … `m6-start` 로 합류.
+브랜치를 바꾼 뒤에는 `pip install -r requirements.txt` 를 다시 실행하세요 (m6-start 부터 의존성이 달라집니다).

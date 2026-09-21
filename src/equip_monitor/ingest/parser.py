@@ -11,7 +11,7 @@ from ..models import DeviceState, Telemetry
 
 _LINE = re.compile(r"^(?P<ts>\S+)\s+(?P<device>\S+)\s*(?P<kv>.*)$")
 _KV = re.compile(r"(\w+)=(\S+)")
-_NUMBER = re.compile(r"^\d+(\.\d+)?$")  # 이슈 #3: 음수 값을 못 읽는다
+_NUMBER = re.compile(r"^\d+(\.\d+)?$")  # 숫자 토큰
 
 
 def parse_line(line: str) -> Telemetry:

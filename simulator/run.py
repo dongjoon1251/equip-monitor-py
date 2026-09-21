@@ -20,7 +20,7 @@ DEVICES = ["DEV-01", "DEV-02", "DEV-03"]
 def sample(device: str, tick: int, scenario: str) -> dict:
     temp = 60 + random.uniform(-2, 2)
     if scenario == "overheat" and device == "DEV-02" and tick >= 3:
-        temp = min(86 + (tick - 3) * 1.5, 97)  # 86°C 부터 상승, tick 9 부터 95°C 초과
+        temp = min(86 + (tick - 3) * 1.5, 97)  # 86°C 부터 상승, tick 9 부터 95°C 이상
     return {
         "device_id": device,
         "ts": datetime.now(timezone.utc).isoformat(),
