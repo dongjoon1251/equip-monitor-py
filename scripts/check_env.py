@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import importlib
+import os
 import shutil
 import subprocess
 import sys
@@ -29,7 +30,10 @@ def main() -> int:
         try:
             out = subprocess.run(["code", "--list-extensions"], capture_output=True, text=True, timeout=20).stdout
             installed = {line.strip().lower() for line in out.splitlines()}
-            results.append(check("GitHub Copilot Chat extension", "github.copilot-chat" in installed, 'GitHub Copilot Chat 확장을 설치하세요 (VS Code 확장 탭에서 "GitHub Copilot Chat")'))
+            # VS Code 1.11x 부터 Copilot Chat 은 VS Code 에 내장 → 확장 목록에 안 나온다. 설치본의 내장 확장 폴더도 확인.
+            code_dir = os.path.dirname(os.path.realpath(shutil.which("code")))
+            builtin = any(os.path.isdir(os.path.join(code_dir, "..", *sub, "copilot")) for sub in (("extensions",), ("resources", "app", "extensions")))
+            results.append(check("GitHub Copilot Chat (확장 또는 VS Code 내장)", "github.copilot-chat" in installed or builtin, 'VS Code 를 최신으로 업데이트하거나, 확장 탭에서 "GitHub Copilot Chat" 설치'))
         except Exception:
             results.append(check("GitHub Copilot Chat extension", False, "code --list-extensions 실행 실패"))
     print("\n모두 OK — 이 화면을 캡처해 제출하세요." if all(results) else "\nFAIL 항목을 해결한 뒤 다시 실행하세요.")
