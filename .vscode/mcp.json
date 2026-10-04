@@ -1,4 +1,12 @@
 {
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "equip-api-key",
+      "description": "equip-monitor 조회 API 키 (EQUIP_API_KEY)",
+      "password": true
+    }
+  ],
   "servers": {
     "github": {
       "type": "http",
@@ -7,8 +15,13 @@
     "equip": {
       "type": "stdio",
       "command": "${workspaceFolder}/.venv/bin/python",
-      "args": ["${workspaceFolder}/mcp_server/equip_mcp.py"],
-      "env": { "EQUIP_API": "http://127.0.0.1:8000" }
+      "args": [
+        "${workspaceFolder}/mcp_server/equip_mcp.py"
+      ],
+      "env": {
+        "EQUIP_API": "http://127.0.0.1:8000",
+        "EQUIP_API_KEY": "${input:equip-api-key}"
+      }
     }
   }
 }

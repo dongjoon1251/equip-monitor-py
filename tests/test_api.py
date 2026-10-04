@@ -57,3 +57,14 @@ def test_uptime_report_per_device():
     assert 0 < row["uptime_ratio"] < 1
     assert len(client.get("/report/uptime", params={"from": "2026-09-21", "to": "2026-09-21"}).json()) == 2
     assert client.get("/report/uptime", params={"from": "2026-09-21", "to": "2026-09-21", "device_id": "X"}).status_code == 404
+
+
+def test_api_key_required_for_reads_when_configured(monkeypatch):
+    from equip_monitor.app import create_app
+
+    monkeypatch.setenv("EQUIP_API_KEY", "test-key")
+    c = TestClient(create_app())
+    assert c.get("/devices").status_code == 401
+    assert c.get("/devices", headers={"X-API-Key": "wrong"}).status_code == 401
+    assert c.get("/devices", headers={"X-API-Key": "test-key"}).status_code == 200
+    assert c.get("/health").status_code == 200

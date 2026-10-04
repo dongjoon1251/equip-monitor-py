@@ -40,3 +40,5 @@ data/samples 정상 · 과열 · 음수 로그
 
 ## 내부 MCP 서버 (M5)
 `mcp_server/equip_mcp.py` — 실행 중인 API 를 읽기 전용 도구 4개로 노출. `.vscode/mcp.json` 의 `equip` 항목으로 Copilot 에 연결된다. Windows 에서는 `command` 를 `${workspaceFolder}\\.venv\\Scripts\\python.exe` 로 바꾼다.
+- API 키: API 를 `EQUIP_API_KEY=<키> uvicorn equip_monitor.app:app --reload` 로 띄우면 조회(GET)에 `X-API-Key` 헤더가 필요하다(키를 안 주면 예전처럼 열림). MCP 서버는 같은 키를 `.vscode/mcp.json` 의 `inputs` 로 입력받는다 — 키는 저장소에 적지 않는다.
+- http 방식: `EQUIP_API_KEY=<키> python mcp_server/equip_mcp.py --http` → `http://127.0.0.1:8001/mcp` (요청마다 `X-API-Key` 헤더 필요). `mcp.json` 예: `"equip-http": {"type": "http", "url": "http://127.0.0.1:8001/mcp", "headers": {"X-API-Key": "${input:equip-api-key}"}}`
