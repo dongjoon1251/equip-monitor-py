@@ -27,16 +27,30 @@ def main() -> int:
     # gh 로그인은 선택: 실습 이슈 생성(seed)·PR 생성에만 쓰고, 둘 다 GitHub 웹으로 대신할 수 있다 → 실패해도 WARN.
     gh_ok = shutil.which("gh") is not None and subprocess.run(["gh", "auth", "status"], capture_output=True).returncode == 0
     print("[OK ] gh auth status" if gh_ok else "[WARN] gh auth status   → (선택) gh auth login — 이슈 생성(seed)·PR 생성에 사용, 안 되면 GitHub 웹에서 직접 해도 됩니다")
-    if shutil.which("code") is not None:
+    code_path = shutil.which("code")
+    if code_path is not None:
         try:
-            out = subprocess.run(["code", "--list-extensions"], capture_output=True, text=True, timeout=20).stdout
-            installed = {line.strip().lower() for line in out.splitlines()}
-            # VS Code 1.11x 부터 Copilot Chat 은 VS Code 에 내장 → 확장 목록에 안 나온다. 설치본의 내장 확장 폴더도 확인.
-            code_dir = os.path.dirname(os.path.realpath(shutil.which("code")))
-            builtin = any(os.path.isdir(os.path.join(code_dir, "..", *sub, "copilot")) for sub in (("extensions",), ("resources", "app", "extensions")))
-            results.append(check("GitHub Copilot Chat (확장 또는 VS Code 내장)", "github.copilot-chat" in installed or builtin, 'VS Code 를 최신으로 업데이트하거나, 확장 탭에서 "GitHub Copilot Chat" 설치'))
-        except Exception:
-            results.append(check("GitHub Copilot Chat extension", False, "code --list-extensions 실행 실패"))
+            proc = subprocess.run([code_path, "--list-extensions"], capture_output=True, text=True, timeout=20)
+            if proc.returncode == 0:
+                installed = {line.strip().lower() for line in proc.stdout.splitlines()}
+                # VS Code 1.11x 부터 Copilot Chat 은 VS Code 에 내장 → 확장 목록에 안 나온다. 설치본의 내장 확장 폴더도 확인.
+                install_dir = os.path.dirname(os.path.dirname(os.path.realpath(code_path)))
+                app_dirs = [install_dir]
+                with os.scandir(install_dir) as entries:
+                    app_dirs.extend(entry.path for entry in entries if entry.is_dir())
+                builtin = any(
+                    os.path.isdir(os.path.join(app_dir, *sub, "copilot"))
+                    for app_dir in app_dirs
+                    for sub in (("extensions",), ("resources", "app", "extensions"))
+                )
+                results.append(check("GitHub Copilot Chat (확장 또는 VS Code 내장)", "github.copilot-chat" in installed or builtin, 'VS Code 를 최신으로 업데이트하거나, 확장 탭에서 "GitHub Copilot Chat" 설치'))
+            else:
+                detail = proc.stderr.strip() or proc.stdout.strip() or f"종료 코드 {proc.returncode}"
+                results.append(check("GitHub Copilot Chat extension", False, f"code --list-extensions 실패: {detail}"))
+        except subprocess.TimeoutExpired:
+            results.append(check("GitHub Copilot Chat extension", False, "code --list-extensions 가 20초 안에 응답하지 않음"))
+        except OSError as exc:
+            results.append(check("GitHub Copilot Chat extension", False, f"code 실행 실패: {exc}"))
     print("\n모두 OK — 이 화면을 캡처해 제출하세요." if all(results) else "\nFAIL 항목을 해결한 뒤 다시 실행하세요.")
     return 0 if all(results) else 1
 
