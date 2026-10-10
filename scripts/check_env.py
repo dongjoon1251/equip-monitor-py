@@ -24,9 +24,9 @@ def main() -> int:
     code_hint = 'VS Code 에서 Cmd+Shift+P → "Shell Command: Install \'code\' command in PATH"' if sys.platform == "darwin" else "code 설치 후 터미널 재시작"
     for tool, hint in (("git", "git 설치 후 터미널 재시작"), ("gh", "gh 설치 후 터미널 재시작"), ("code", code_hint)):
         results.append(check(f"{tool} on PATH", shutil.which(tool) is not None, hint))
-    # gh 로그인은 선택: 실습 이슈 생성(seed)·PR 생성에만 쓰고, 둘 다 GitHub 웹으로 대신할 수 있다 → 실패해도 WARN.
+    # gh 로그인은 선택: PR 생성에만 쓰고, GitHub 웹으로 대신할 수 있다 → 실패해도 WARN.
     gh_ok = shutil.which("gh") is not None and subprocess.run(["gh", "auth", "status"], capture_output=True).returncode == 0
-    print("[OK ] gh auth status" if gh_ok else "[WARN] gh auth status   → (선택) gh auth login — 이슈 생성(seed)·PR 생성에 사용, 안 되면 GitHub 웹에서 직접 해도 됩니다")
+    print("[OK ] gh auth status" if gh_ok else "[WARN] gh auth status   → (선택) gh auth login — PR 생성에 사용, 안 되면 GitHub 웹에서 직접 해도 됩니다")
     code_path = shutil.which("code")
     if code_path is not None:
         try:
