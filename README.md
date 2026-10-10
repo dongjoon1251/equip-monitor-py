@@ -23,15 +23,14 @@ src/equip_monitor/
   report/    상태별 체류시간 · 가동률 · day_range
   store.py   인메모리 저장소
 simulator/   가짜 장비 3대
-scripts/     check_env · seed(이슈 생성) · check_rules(로그 → 알람 표)
+scripts/     check_env · check_rules(로그 → 알람 표)
 data/samples 정상 · 과열 · 음수 로그
 ```
 로그 라인: `2026-09-21T09:00:00Z DEV-01 state=RUN temp=82.5 pressure=1.20`
 
 ## 실습 이슈
-`python scripts/seed.py` 로 생성 (한 번만 실행 — 재실행 시 이슈가 중복 생성됨). 본문은 `docs/issues/`.
-강사용: `python scripts/seed.py --with-injection` (이슈 #4 본문은 강사용 solution repo 에만 있음 → --injection-file 로 경로 지정)
-
+요구사항은 `docs/issues/` 의 01~03 파일입니다. GitHub 이슈 #1~#3 은 MCP & 보안 시간에 Copilot 이 GitHub MCP 로 이 파일들을 순서대로 등록합니다.
+강사용: 데모 저장소의 인젝션 시연 이슈 #4 는 강사용 solution repo 의 `docs/issues/04-log-format-question.md` 로 직접 만듭니다 (`gh issue create --title "로그 포맷 문의: vibration 단위가 무엇인가요?" --body-file <그 파일 경로>`).
 ## 체크포인트
 > **Use this template** 로 자기 repo 를 만들 때 **Include all branches** 를 반드시 체크하세요. 체크하지 않으면 아래 체크포인트 브랜치가 생기지 않습니다.
 
