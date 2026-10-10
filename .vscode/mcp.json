@@ -15,6 +15,7 @@
     "equip": {
       "type": "stdio",
       "command": "${workspaceFolder}/.venv/bin/python",
+      // Windows: "command": "${workspaceFolder}/.venv/Scripts/python.exe",
       "args": [
         "${workspaceFolder}/mcp_server/equip_mcp.py"
       ],
